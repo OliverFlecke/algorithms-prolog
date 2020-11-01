@@ -23,15 +23,17 @@ sudoku(Rows) :-
 	maplist(all_distinct, Rows),
 	transpose(Rows, Cols),
 	maplist(all_distinct, Cols),
-	Rows = [A, B, C, D, E, F, G, H, I],
-	check_square(A, B, C),
-	check_square(D, E, F),
-	check_square(G, H, I).
+	distinct_squares(Rows).
 
-check_square([], [], []).
-check_square([N11, N12, N13 | Tail1], [N21, N22, N23 | Tail2], [N31, N32, N33 | Tail3]) :-
+distinct_squares([]).
+distinct_squares([C1, C2, C3 | Tail]) :-
+	distinct_square(C1, C2, C3),
+	distinct_squares(Tail).
+
+distinct_square([], [], []).
+distinct_square([N11, N12, N13 | Tail1], [N21, N22, N23 | Tail2], [N31, N32, N33 | Tail3]) :-
 	all_distinct([N11, N12, N13, N21, N22, N23, N31, N32, N33]),
-	check_square(Tail1, Tail2, Tail3).
+	distinct_square(Tail1, Tail2, Tail3).
 
 pretty(Solution) :-
 	maplist(labeling([ff]), Solution),

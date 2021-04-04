@@ -11,14 +11,13 @@
 *
 * pretty/1 will output the solution with each row on its own line.
 */
-
-:- use_module(library(clpfd)).
 :- use_module(library(lists)).
 
 sudoku(Rows) :-
 	length(Rows, 9),
 	maplist(same_length(Rows), Rows),
-	append(Rows, Ns), Ns ins 1..9, % Check all numbers are in the domain 1-9
+	append(Rows, Ns),
+	in_domain(Ns),
 	maplist(all_distinct, Rows),
 	transpose(Rows, Cols),
 	maplist(all_distinct, Cols),
@@ -39,6 +38,14 @@ distinct_square(
 		N21, N22, N23,
 		N31, N32, N33]),
 	distinct_square(Tail1, Tail2, Tail3).
+
+in_domain([]).
+in_domain([X | Xs]) :-
+	in_domain(Xs),
+	between(1, 9, X).
+
+all_distinct([]).
+all_distinct([X | Xs]) :- \+ member(X, Xs), all_distinct(Xs).
 
 pretty(Solution) :-
 	maplist(labeling([ff]), Solution),
